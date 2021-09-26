@@ -21,24 +21,32 @@ document.addEventListener("DOMContentLoaded", () => {
         for(const dog in e.message) {
             let li = document.createElement('li')
             li.innerHTML = dog
-            let dropdown = document.querySelector('#breed-dropdown')
-            console.log(li)
-            // let filter = li.filter(element => {
-            //     if (element.charAt(0) === 'a') {
-            //         return element.startWith('a')
-            //     } else if (element.charAt(0) === 'b') {
-            //         return element.startWith('b')
-            //     } else if (element.charAt(0) === 'c') {
-            //         return element.startWith('c')
-            //     } else if (element.charAt(0) === 'd') {
-            //         return element.startWith('d')
-            //     }
-            // })
-            // dropdown.append(filter)
             li.addEventListener('click', () => {
                 li.style.color = 'blue'
             })
             ulTag.append(li)
         }
     })
+    let dropdown = document.querySelector('#breed-dropdown')
+    dropdown.addEventListener("change", (e) => {
+        renderNewList(e.target.value)
+    })
+    function renderNewList(letter) {
+        let ulTag = document.querySelector('ul#dog-breeds')
+        ulTag.innerHTML = ""
+        fetch('https://dog.ceo/api/breeds/list/all')
+        .then(resp => resp.json())
+        .then(e => {
+        let breedsArray = Object.keys(e.message)
+        let filteredBreeds = breedsArray.filter(breed => breed.charAt(0) === letter)
+        filteredBreeds.forEach(breed => {
+            let li = document.createElement('li')
+            li.innerHTML = breed
+            li.addEventListener('click', () => {
+                li.style.color = 'blue'
+            })
+            ulTag.append(li)
+        })
+    })
+    }
 })
